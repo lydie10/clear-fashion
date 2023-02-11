@@ -24,12 +24,15 @@ let currentPagination = {};
 // brands on the page 
 let brands = [];
 
+
+
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
 const selectBrand = document.querySelector('#brand-select');
+const selectSort = document.querySelector('#sort-select');
 
 /**
  * Set global value
@@ -185,7 +188,7 @@ selectBrand.addEventListener('change', async (event) => {
   let selectedBrand = event.target.value;
   let currentBrand = {};
   currentBrand[selectedBrand] = [];
-  
+
   for (const product of currentProducts) {
     console.log(product);
     if (product.brand == selectedBrand) {
@@ -195,6 +198,41 @@ selectBrand.addEventListener('change', async (event) => {
   render(currentBrand[selectedBrand], currentPagination, brands);
 });
 
+/**
+ * Filter by date and by price 
+ */
+selectSort.addEventListener('change', async (event) => {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+
+  setCurrentProducts(products);
+
+  let sortedProducts = {};
+
+  console.log(event.target.value);
+  if (event.target.value == "price-desc"){
+    sortedProducts = sortByPriceHighToLow(currentProducts);
+    console.log(sortedProducts);
+  }
+  else if (event.target.value == "price-asc"){
+    sortedProducts = sortByPrice(currentProducts);
+    console.log(sortedProducts);
+  }
+  else if (event.target.value == "date-desc"){
+    sortedProducts = sortByDateOldToRecent(currentProducts);
+    console.log(sortedProducts);
+  }
+  else if (event.target.value == "date-asc"){
+    sortedProducts = sortByDateRecentToOld(currentProducts);
+    console.log(sortedProducts);
+  }
+
+
+  render(sortedProducts, currentPagination, brands);
+});
+
+/**
+ * Select Page
+ */
 selectPage.addEventListener('change', async (event) => {
   const products = await fetchProducts(parseInt(event.target.value), currentPagination.pageSize);
 
@@ -211,4 +249,42 @@ document.addEventListener('DOMContentLoaded', async () => {
   render(currentProducts, currentPagination, brands);
 });
 
+/**
+ * Sort functions
+ */
 
+function sortByPriceHighToLow(data) {
+  const sorted = data.sort((a, b) => {
+    if (a.price > b.price) {
+      return -1;
+    }
+  });
+  return sorted;
+  };
+
+function sortByPrice(data) {
+   const sorted = data.sort((a, b) => {
+    if (a.price < b.price) {
+      return -1;
+    }
+  });
+  return sorted;
+  };
+
+function sortByDateRecentToOld(data) {
+const sorted = data.sort((a, b) => {
+  if (a.released > b.released) {
+    return -1;
+  }
+});
+return sorted;
+};
+
+function sortByDateOldToRecent(data) {
+  const sorted = data.sort((a, b) => {
+    if (a.released < b.released) {
+      return -1;
+    }
+  });
+  return sorted;
+  };
