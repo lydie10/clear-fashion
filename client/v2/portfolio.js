@@ -30,9 +30,17 @@ let brands = [];
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const sectionProducts = document.querySelector('#products');
-const spanNbProducts = document.querySelector('#nbProducts');
 const selectBrand = document.querySelector('#brand-select');
 const selectSort = document.querySelector('#sort-select');
+const selectReasonablePrice = document.querySelector('#reasonable-price-select');
+const selectRecent = document.querySelector('#recent-select');
+
+const spanNbProducts = document.querySelector('#nbProducts');
+const spanNbBrands = document.querySelector('#nbBrands');
+const spanNbNewProducts = document.querySelector('#nbNewProducts');
+const spanP50 = document.querySelector('#p50');
+const spanP90 = document.querySelector('#p90');
+const spanP95 = document.querySelector('#p95');
 
 /**
  * Set global value
@@ -139,11 +147,17 @@ const renderPagination = pagination => {
  * Render page selector
  * @param  {Object} pagination
  */
-const renderIndicators = pagination => {
+const renderIndicators = (pagination,brands) => {
   const {count} = pagination;
 
   spanNbProducts.innerHTML = count;
+  spanNbBrands.innerHTML = brands.result.length;
+  spanNbNewProducts.innerHTML = brands.result.length;
+  spanP50.innerHTML = brands.result.length;
+  spanP90.innerHTML = brands.result.length;
+  spanP95.innerHTML = brands.result.length;
 };
+
 
 /**
  * Render brands selector
@@ -158,7 +172,7 @@ const renderBrands = brands => {
 const render = (products, pagination,brands) => {
   renderProducts(products);
   renderPagination(pagination);
-  renderIndicators(pagination);
+  renderIndicators(pagination,brands);
   renderBrands(brands);
 };
 
@@ -199,8 +213,68 @@ selectBrand.addEventListener('change', async (event) => {
 });
 
 /**
+ * By recently released
+ */
+selectRecent.addEventListener('change', async (event) => {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+
+  setCurrentProducts(products);
+
+  let onlyRecentProducts = [];
+
+  if(event.target.value == "Yes"){
+    let twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+    twoWeeksAgo = formatDate(twoWeeksAgo);
+  
+
+    for (let i = 0; i<currentProducts.length; i++) {
+    if (currentProducts[i].released > twoWeeksAgo) {
+      onlyRecentProducts.push(currentProducts[i]);
+      }
+    };
+  }
+  else {
+    const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+    setCurrentProducts(products);
+    render(currentProducts, currentPagination, brands);
+  }
+
+  render(onlyRecentProducts, currentPagination, brands);
+});
+
+/**
+ * By reasonable price
+ */
+selectReasonablePrice.addEventListener('change', async (event) => {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+
+  setCurrentProducts(products);
+
+  let onlyReasonablePrice = [];
+
+  console.log(currentProducts);
+
+  if(event.target.value == "Yes"){
+  for (let i = 0; i<currentProducts.length; i++) {
+  if (currentProducts[i].price <50) {
+    onlyReasonablePrice.push(currentProducts[i]);
+    }
+  };
+}
+else {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+  setCurrentProducts(products);
+  render(currentProducts, currentPagination, brands);
+}
+
+  render(onlyReasonablePrice, currentPagination, brands);
+});
+
+/**
  * Filter by date and by price 
  */
+
 selectSort.addEventListener('change', async (event) => {
   const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
 
@@ -226,7 +300,6 @@ selectSort.addEventListener('change', async (event) => {
     console.log(sortedProducts);
   }
 
-
   render(sortedProducts, currentPagination, brands);
 });
 
@@ -248,6 +321,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setCurrentProducts(products);
   render(currentProducts, currentPagination, brands);
 });
+
 
 /**
  * Sort functions
@@ -271,6 +345,11 @@ function sortByPrice(data) {
   return sorted;
   };
 
+
+/**
+ * Date functions
+ */
+
 function sortByDateRecentToOld(data) {
 const sorted = data.sort((a, b) => {
   if (a.released > b.released) {
@@ -288,3 +367,18 @@ function sortByDateOldToRecent(data) {
   });
   return sorted;
   };
+
+
+function formatDate(date) {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+
+  return [year, month, day].join('-');
+}
