@@ -20,6 +20,11 @@ Search for available brands list
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
+let onlyRecentProducts = [];
+let onlyReasonablePrice = [];
+
+// favorite products
+let favoriteProducts = [];
 
 // brands on the page 
 let brands = [];
@@ -41,6 +46,7 @@ const spanNbNewProducts = document.querySelector('#nbNewProducts');
 const spanP50 = document.querySelector('#p50');
 const spanP90 = document.querySelector('#p90');
 const spanP95 = document.querySelector('#p95');
+const spanLatestRelease = document.querySelector('#latestRelease');
 
 /**
  * Set global value
@@ -116,6 +122,9 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}">${product.name}</a>
         <span>${product.price}</span>
+        <label class="add-fav">
+          <input id=${product.uuid} type="checkbox" onchange="manageFavorites(this)"/>
+      </label>
       </div>
     `;
     })
@@ -147,16 +156,22 @@ const renderPagination = pagination => {
  * Render page selector
  * @param  {Object} pagination
  */
-const renderIndicators = (pagination,brands) => {
+const renderIndicators = (pagination,products,brands) => {
   const {count} = pagination;
 
   spanNbProducts.innerHTML = count;
   spanNbBrands.innerHTML = brands.result.length;
-  spanNbNewProducts.innerHTML = brands.result.length;
-  spanP50.innerHTML = brands.result.length;
-  spanP90.innerHTML = brands.result.length;
-  spanP95.innerHTML = brands.result.length;
+  spanNbNewProducts.innerHTML = onlyRecentProducts.length;
+
+  let sortedProducts = sortByDateRecentToOld(products);
+  spanLatestRelease.innerHTML = sortedProducts[0].released;
 };
+
+const renderPValues = (p50, p90, p95) => {
+  spanP50.innerHTML = p50;
+  spanP90.innerHTML = p90;
+  spanP95.innerHTML = p95;
+}
 
 
 /**
@@ -172,7 +187,7 @@ const renderBrands = brands => {
 const render = (products, pagination,brands) => {
   renderProducts(products);
   renderPagination(pagination);
-  renderIndicators(pagination,brands);
+  renderIndicators(pagination,products,brands);
   renderBrands(brands);
 };
 
@@ -220,19 +235,8 @@ selectRecent.addEventListener('change', async (event) => {
 
   setCurrentProducts(products);
 
-  let onlyRecentProducts = [];
-
   if(event.target.value == "Yes"){
-    let twoWeeksAgo = new Date();
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-    twoWeeksAgo = formatDate(twoWeeksAgo);
-  
-
-    for (let i = 0; i<currentProducts.length; i++) {
-    if (currentProducts[i].released > twoWeeksAgo) {
-      onlyRecentProducts.push(currentProducts[i]);
-      }
-    };
+    recentDate(currentProducts,onlyRecentProducts);
   }
   else {
     const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
@@ -250,10 +254,6 @@ selectReasonablePrice.addEventListener('change', async (event) => {
   const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
 
   setCurrentProducts(products);
-
-  let onlyReasonablePrice = [];
-
-  console.log(currentProducts);
 
   if(event.target.value == "Yes"){
   for (let i = 0; i<currentProducts.length; i++) {
@@ -313,12 +313,23 @@ selectPage.addEventListener('change', async (event) => {
   render(currentProducts, currentPagination);
 });
 
+/**
+ * Load Page
+ */
+
 document.addEventListener('DOMContentLoaded', async () => {
   const products = await fetchProducts();
   const brands = await fetchBrands();
 
-  console.log(brands);
   setCurrentProducts(products);
+
+  console.log(currentProducts);
+
+  window.localStorage.setItem('favoriteProducts',favoriteProducts);
+
+  let [p50, p90, p95] = getPValueIndicator(currentProducts);
+
+  renderPValues(p50, p90, p95);
   render(currentProducts, currentPagination, brands);
 });
 
@@ -381,4 +392,70 @@ function formatDate(date) {
       day = '0' + day;
 
   return [year, month, day].join('-');
+}
+
+function recentDate(currentProducts, onlyRecentProducts) {
+  let twoWeeksAgo = new Date();
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+   twoWeeksAgo = formatDate(twoWeeksAgo);
+  
+
+   for (let i = 0; i<currentProducts.length; i++) {
+    if (currentProducts[i].released > twoWeeksAgo) {
+     onlyRecentProducts.push(currentProducts[i]);
+      }
+    };
+}
+
+/**
+ * P -value function
+ */
+
+function getPValueIndicator(currentProducts) {
+    var index50th = Math.floor(currentProducts.length*0.5);
+    var index90th = Math.floor(currentProducts.length*0.9);
+    var index95th = Math.floor(currentProducts.length*0.95);
+    let sortedCurrentProducts = sortByPrice(currentProducts);
+  
+
+    return ([sortedCurrentProducts[index50th].price,
+            sortedCurrentProducts[index90th].price,
+            sortedCurrentProducts[index95th].price])
+ 
+  };
+
+  /**
+ * Add to favorite function
+ */
+
+function manageFavorites (element){
+
+  let favoritesList =  localStorage.getItem("favoriteProducts");
+
+  if (!element.checked){
+    for (let i = 0; i<favoritesList.length; i++) {
+      if (favoritesList.uuid == element.id) {
+        favoritesList.splice(i, 1);
+        break;
+      }
+    };
+  }
+  if (element.checked) {
+    for (let i = 0; i<currentProducts.length; i++) {
+      if (currentProducts[i].uuid == element.id) {
+        if (favoritesList.length == 0){
+          favoritesList = [currentProducts[i]]
+        }
+        else {
+          favoritesList.push(currentProducts[i])
+        }
+        break;
+      }
+    };
+  }
+
+  localStorage.setItem("favoriteProducts", JSON.stringify(favoritesList));
+
+  console.log(localStorage);
+
 }
