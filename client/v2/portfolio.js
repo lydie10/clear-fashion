@@ -39,6 +39,7 @@ const selectBrand = document.querySelector('#brand-select');
 const selectSort = document.querySelector('#sort-select');
 const selectReasonablePrice = document.querySelector('#reasonable-price-select');
 const selectRecent = document.querySelector('#recent-select');
+const selectFavorite = document.querySelector('#favorite-select');
 
 const spanNbProducts = document.querySelector('#nbProducts');
 const spanNbBrands = document.querySelector('#nbBrands');
@@ -219,7 +220,6 @@ selectBrand.addEventListener('change', async (event) => {
   currentBrand[selectedBrand] = [];
 
   for (const product of currentProducts) {
-    console.log(product);
     if (product.brand == selectedBrand) {
     currentBrand[product.brand].push(product)
     }
@@ -271,6 +271,28 @@ else {
   render(onlyReasonablePrice, currentPagination, brands);
 });
 
+
+/**
+ * By favorite products
+ */
+selectFavorite.addEventListener('change', async (event) => {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+
+  setCurrentProducts(products);
+
+  if(event.target.value == "Yes"){
+    let favoritesList = JSON.parse(localStorage.getItem("favoriteProducts"));
+  
+    render(favoritesList, currentPagination, brands);
+}
+else {
+  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+
+  setCurrentProducts(products);
+  render(currentProducts, currentPagination, brands);
+  }
+});
+
 /**
  * Filter by date and by price 
  */
@@ -282,22 +304,17 @@ selectSort.addEventListener('change', async (event) => {
 
   let sortedProducts = {};
 
-  console.log(event.target.value);
   if (event.target.value == "price-desc"){
     sortedProducts = sortByPriceHighToLow(currentProducts);
-    console.log(sortedProducts);
   }
   else if (event.target.value == "price-asc"){
     sortedProducts = sortByPrice(currentProducts);
-    console.log(sortedProducts);
   }
   else if (event.target.value == "date-desc"){
     sortedProducts = sortByDateOldToRecent(currentProducts);
-    console.log(sortedProducts);
   }
   else if (event.target.value == "date-asc"){
     sortedProducts = sortByDateRecentToOld(currentProducts);
-    console.log(sortedProducts);
   }
 
   render(sortedProducts, currentPagination, brands);
@@ -325,7 +342,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   console.log(currentProducts);
 
-  window.localStorage.setItem('favoriteProducts',favoriteProducts);
+  localStorage.setItem('favoriteProducts',JSON.stringify(favoriteProducts));
 
   let [p50, p90, p95] = getPValueIndicator(currentProducts);
 
@@ -430,7 +447,9 @@ function getPValueIndicator(currentProducts) {
 
 function manageFavorites (element){
 
-  let favoritesList =  localStorage.getItem("favoriteProducts");
+  let favoritesList =  JSON.parse(localStorage.getItem("favoriteProducts"));
+
+  console.log(favoritesList)
 
   if (!element.checked){
     for (let i = 0; i<favoritesList.length; i++) {
