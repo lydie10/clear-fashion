@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const fs = require('fs');
 const cheerio = require('cheerio');
 
 /**
@@ -57,3 +58,33 @@ module.exports.scrape = async url => {
     return null;
   }
 };
+
+/**
+   * Scrape all the products for a given url page and save as a JSON file
+   * @param  {string}  url
+   * @param  {string}  filename
+   * @return {Promise<boolean>} - true if successful, false otherwise
+   * 
+   */module.exports.scrapeAndSave = async (url, filename) => {
+    try {
+      const response = await fetch(url);
+  
+      if (response.ok) {
+        const body = await response.text();
+  
+        const data = parse(body);
+  
+        // Write the data to a JSON file
+        fs.writeFileSync(filename, JSON.stringify( data,null , 2));
+  
+        return true;
+      }
+  
+      console.error(response);
+  
+      return false;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };  

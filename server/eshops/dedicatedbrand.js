@@ -82,7 +82,7 @@ module.exports.getProducts= async() =>{
         }
       );
        // Write the data to a JSON file
-       fs.writeFileSync('dedicated.json', JSON.stringify(data_json));
+       fs.writeFileSync('dedicated.json', JSON.stringify(data_json,null , 2));
 
        return true;
     }
