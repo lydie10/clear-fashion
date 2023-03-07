@@ -12,6 +12,7 @@ const parse = data => {
 
   return $('.products-list__block')
     .map((i, element) => {
+      const brand = 'montlimart';
       const name = $(element)
         .find('.text-reset')
         .text()
@@ -31,7 +32,7 @@ const parse = data => {
       ;
       let date = new Date().toISOString().slice(0, 10);
 
-      return {name, price, link, image, date};
+      return {brand,name, price, link, image, date};
     })
     .get();
 };

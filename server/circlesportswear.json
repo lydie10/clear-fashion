@@ -1,135 +1,154 @@
 [
   {
+    "brand": "circlesportswear",
     "name": "Chaussettes de running Speedy High",
     "price": "22",
     "link": "https://shop.circlesportswear.com//products/chaussettes-de-running-speedy-high",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/SPEEDY_HI_lilac_1.jpg?v=1671712742&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "Chaussettes de running Speedy Low",
     "price": "19",
     "link": "https://shop.circlesportswear.com//products/chaussettes-de-running-speedy-low",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/SPEEDY_LO_navy_1_8a7a945c-9d4e-4c10-badb-edec4ae5f2b8.jpg?v=1671724740&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "Legging de Running Homme Men in Tights",
     "price": "95",
     "link": "https://shop.circlesportswear.com//products/legging-de-running-homme-men-in-tights",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/legging_men_in_tights_moss_1_720fe00a-ffef-4281-91ad-309b281e7acd.jpg?v=1668526916&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "Short de Sport One For All",
     "price": "69",
     "link": "https://shop.circlesportswear.com//products/short-sport-one-for-all",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/short_one_for_all_moss_1_2ebdbf23-7ba2-49b9-a3bf-4204b7491beb.jpg?v=1668437268&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "T-shirt à manches longues Feel Good POP",
     "price": "79",
     "link": "https://shop.circlesportswear.com//products/feel-good-long-sleeve-pop",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/manches_longues_feel_good_pop_onyx_black_1.jpg?v=1668490722&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "T-shirt de Sport Iconic POP",
     "price": "65",
     "link": "https://shop.circlesportswear.com//products/t-shirt-de-sport-iconic-pop",
-    "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/t-shirt_iconic_pop_navy_1.jpg?v=1668489475&width=165 165w",
-    "date": "2023-02-20"
+    "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/t-shirt_iconic_pop_navy_women_1.jpg?v=1676993264&width=165 165w",
+    "date": "2023-03-07"
   },
   {
-    "name": "Jogging Homme Get Lucky",
+    "brand": "circlesportswear",
+    "name": "Pantalon de Jogging Get Lucky",
     "price": "129",
-    "link": "https://shop.circlesportswear.com//products/jogging-homme-get-lucky",
-    "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/jogging_get_lucky_moss_1.jpg?v=1666958586&width=165 165w",
-    "date": "2023-02-20"
+    "link": "https://shop.circlesportswear.com//products/jogging-pants-get-lucky",
+    "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/jogging_get_lucky_moss_men_1.jpg?v=1677499453&width=165 165w",
+    "date": "2023-03-07"
   },
   {
-    "name": "Hoodie Oversize Homme Get Lucky",
+    "brand": "circlesportswear",
+    "name": "Hoodie Oversize Get Lucky",
     "price": "149",
-    "link": "https://shop.circlesportswear.com//products/hoodie-homme-get-lucky",
-    "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/hoodie_get_lucky_navy_1.jpg?v=1668580740&width=165 165w",
-    "date": "2023-02-20"
+    "link": "https://shop.circlesportswear.com//products/hoodie-get-lucky",
+    "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/hoodie_get_lucky_lilac_men_1.jpg?v=1677654434&width=165 165w",
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "T-shirt à manches longues Feel Good",
     "price": "79",
     "link": "https://shop.circlesportswear.com//products/haut-manches-longues-feel-good",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/manches_longues_feel_good_onyx_black_1.jpg?v=1668579733&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "T-shirt Iconic Social",
     "price": "50",
     "link": "https://shop.circlesportswear.com//products/t-shirt-iconic-social",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/t-shirt_iconic_la_montgolfiere_noire_1.jpg?v=1662736374&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "Short de Compression Hit The Road",
     "price": "75",
     "link": "https://shop.circlesportswear.com//products/short-de-compression-hit-the-road",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/biker_hit_the_road_moss_1.jpg?v=1668581684&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "Haut à manches longues Homme - Motivation",
     "price": "85",
     "link": "https://shop.circlesportswear.com//products/t-shirt-manches-longues-sport-homme",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/manches_longues_motivation_homme_volcano_black_1.jpg?v=1668674932&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "T-shirt de Sport Iconic",
     "price": "59",
     "link": "https://shop.circlesportswear.com//products/t-shirt-sport-iconic",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/t-shirt_iconic_navy_1_4c3443c0-d990-485d-a22e-450b621f85d1.jpg?v=1668151496&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "T-shirt Technique Agility",
     "price": "59",
     "link": "https://shop.circlesportswear.com//products/t-shirt-technique-agility",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/t-shirt_agility_granite_grey_1.jpg?v=1669191822&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "T-shirt Iconic Manifesto",
     "price": "65",
     "link": "https://shop.circlesportswear.com//products/t-shirt-iconic-manifesto",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/t-shirt_iconic_manifesto_lilac_1.jpg?v=1652798657&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "Haut sans manche Muscle Tee",
     "price": "59",
     "link": "https://shop.circlesportswear.com//products/haut-sans-manche-muscle-tee",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/t-shirt_muscle_tee_burgundy_red_1.jpg?v=1669192220&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "Legging de Running Homme Lightning",
     "price": "125",
     "link": "https://shop.circlesportswear.com//products/legging-de-running-homme-lightning",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/legging_lightning_homme_onyx_black_1.jpg?v=1676389110&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "Haut à manches longues Homme Flow",
     "price": "145",
     "link": "https://shop.circlesportswear.com//products/haut-a-manches-longues-homme-flow",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/haut_manches_longues_flow_homme_navy_1.jpg?v=1676463000&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   },
   {
+    "brand": "circlesportswear",
     "name": "Short de Sport Swell",
     "price": "119",
     "link": "https://shop.circlesportswear.com//products/short-de-sport-swell",
     "image": "//cdn.shopify.com/s/files/1/0271/4114/4649/products/short_swell_navy_1.jpg?v=1676389157&width=165 165w",
-    "date": "2023-02-20"
+    "date": "2023-03-07"
   }
 ]

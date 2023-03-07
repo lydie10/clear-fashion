@@ -73,12 +73,13 @@ module.exports.getProducts= async() =>{
       //console.log(products);
       data_json =products.map(
         function(data){
+          const brand = 'dedicated';
           const image= data['image'][0];
           const link = "https://www.dedicatedbrand.com/en/"+ data['canonicalUri'];
           const name =data['name'];
           const price =data['price']['priceAsNumber'];
-          const date =new Date().toDateString();
-          return{name, link, image, price, date};
+          const date =new Date().toISOString().slice(0, 10);
+          return{brand,name, link, image, price, date};
         }
       );
        // Write the data to a JSON file

@@ -14,6 +14,7 @@ const parse = data => {
 
   return $('.product-grid-container .grid__item')
     .map((i, element) => {
+        const brand = 'circlesportswear';
         const name = $(element)
         .find('.card__heading')
         .text()
@@ -37,7 +38,7 @@ const parse = data => {
           .find('.motion-reduce')
           .attr('srcset').split(',')[0];
       let date = new Date().toISOString().slice(0, 10);
-        return {name, price,link,image,date};
+        return {brand,name, price,link,image,date};
       })
       .get();
   };
