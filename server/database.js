@@ -17,8 +17,8 @@ async function run() {
     const db = client.db(MONGODB_DB_NAME);
     const collection = db.collection('products');
 
-    //const result = await collection.insertMany(products);
-    //console.log(result);
+    const result = await collection.insertMany(products, {upsert: true});
+    console.log(result);
 
     //find all products related to a given brand
     brand = 'montlimart'
@@ -38,7 +38,7 @@ async function run() {
     const now = new Date();
     const twoWeeksAgo = new Date(now.getTime() - (14 *24 * 60 * 60 * 1000)).toISOString().slice(0, 10);
     const orderDate = await collection.find({"date":{$gt: twoWeeksAgo}}).toArray();
-    console.log(orderDate);
+    //console.log(orderDate);
 
   } catch (e) {
     console.error(e);
