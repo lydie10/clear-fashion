@@ -54,9 +54,13 @@ const spanLatestRelease = document.querySelector('#latestRelease');
  * @param {Array} result - products to display
  * @param {Object} meta - pagination meta info
  */
-const setCurrentProducts = ({result, meta}) => {
+/*const setCurrentProducts = ({result, meta}) => {
   currentProducts = result;      
   currentPagination = meta;
+};*/
+
+const setCurrentProducts = (result) => {
+  currentProducts = result;     
 };
 
 /**
@@ -65,22 +69,36 @@ const setCurrentProducts = ({result, meta}) => {
  * @param  {Number}  [size=12] - size of the page
  * @return {Object}
  */
-const fetchProducts = async (page = 1, size = 12) => {
+const fetchProducts = async (nbProducts = 500, page = 1, size = 12) => { 
+  if (nbProducts === 'All'){
   try {
     const response = await fetch(
-      `https://clear-fashion-api.vercel.app?page=${page}&size=${size}`
+      `https://server-neon-alpha.vercel.app/products/search?limit=3000`
     );
     const body = await response.json();
-
-    if (body.success !== true) {
-      console.error(body);
-      return {currentProducts, currentPagination};
+  
+    if (body.result !== null) {
+      return body.result;
     }
-    return body.data;
   } catch (error) {
     console.error(error);
     return {currentProducts, currentPagination};
   }
+}else {
+  try {
+    const response = await fetch(
+      `https://server-neon-alpha.vercel.app/products/search?limit=${nbProducts}`
+    );
+    const body = await response.json();
+  
+    if (body.result !== null) {
+      return body.result;
+    }
+  } catch (error) {
+    console.error(error);
+    return {currentProducts, currentPagination};
+  }
+}
 };
 
 /**
@@ -96,10 +114,11 @@ const fetchBrands = async () => {
     const body = await response.json();
 
     if (body.success !== true) {
-      console.error(body);
+      
       return {brands};
     }
 
+    body.data.result = ['dedicated','montlimart','circlesportswear']
     return body.data;
   } catch (error) {
     console.error(error);
@@ -119,12 +138,16 @@ const renderProducts = products => {
     .map(product => {
       return `
       <div class="product" id=${product._id}>
-        <span>${product.brand}</span>
         <a href="${product.link}">${product.name}</a>
+        <img src=${product.image} class="image">
+        <div class="details">
+        <span>${product.brand}</span>
         <span>${product.price}</span>
         <label class="add-fav">
+          Add to favorites
           <input id=${product._id} type="checkbox" onchange="manageFavorites(this)"/>
-      </label>
+        </label>
+        </div>
       </div>
     `;
     })
@@ -132,7 +155,7 @@ const renderProducts = products => {
 
   div.innerHTML = template;
   fragment.appendChild(div);
-  sectionProducts.innerHTML = '<h2>Products</h2>';
+  sectionProducts.innerHTML='<h2>Products</h2>';
   sectionProducts.appendChild(fragment);
 };
 
@@ -156,15 +179,14 @@ const renderPagination = pagination => {
  * Render page selector
  * @param  {Object} pagination
  */
-const renderIndicators = (pagination,products,brands) => {
-  const {count} = pagination;
-
-  spanNbProducts.innerHTML = count;
+const renderIndicators = (products,brands) => {
+  
+  spanNbProducts.innerHTML = products.length;
   spanNbBrands.innerHTML = brands.result.length;
   spanNbNewProducts.innerHTML = onlyRecentProducts.length;
 
   let sortedProducts = sortByDateRecentToOld(products);
-  spanLatestRelease.innerHTML = sortedProducts[0].released;
+  spanLatestRelease.innerHTML = sortedProducts[0].date;
 };
 
 const renderPValues = (p50, p90, p95) => {
@@ -184,10 +206,10 @@ const renderBrands = brands => {
   selectBrand.innerHTML = options;;
 };
 
-const render = (products, pagination,brands) => {
+const render = (products, brands) => {
   renderProducts(products);
-  renderPagination(pagination);
-  renderIndicators(pagination,products,brands);
+  //renderPagination(pagination);
+  renderIndicators(products,brands);
   renderBrands(brands);
 };
 
@@ -199,7 +221,7 @@ const render = (products, pagination,brands) => {
  * Select the number of products to display
  */
 selectShow.addEventListener('change', async (event) => {
-  const products = await fetchProducts(currentPagination.currentPage, parseInt(event.target.value));
+  const products = await fetchProducts(parseInt(event.target.value));
 
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
@@ -227,7 +249,7 @@ selectBrand.addEventListener('change', async (event) => {
 });
 
 /**
- * By recently released
+ * By recently date
  */
 selectRecent.addEventListener('change', async (event) => {
   const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
@@ -323,10 +345,10 @@ selectSort.addEventListener('change', async (event) => {
  * Select Page
  */
 selectPage.addEventListener('change', async (event) => {
-  const products = await fetchProducts(parseInt(event.target.value), currentPagination.pageSize);
-
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination);
+  //const products = await fetchProducts(parseInt(event.target.value), currentPagination.pageSize);
+  window.scrollTo(0, parseInt(event.target.value)*(document.body.scrollHeight/5));
+  //setCurrentProducts(products);
+  //render(currentProducts, currentPagination);
 });
 
 /**
@@ -339,18 +361,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   console.log("products", products);
   setCurrentProducts(products);
-  console.log("current", currentProducts);
 
   renderProducts(products);
-  renderBrands(products);
-  console.log(currentPagination);
+  renderBrands(brands);
 
   localStorage.setItem('favoriteProducts',JSON.stringify(favoriteProducts));
 
-  //let [p50, p90, p95] = getPValueIndicator(currentProducts);
+  let [p50, p90, p95] = getPValueIndicator(currentProducts);
 
-  //renderPValues(p50, p90, p95);
-  //render(currentProducts, currentPagination, brands);
+  renderPValues(p50, p90, p95);
+  render(currentProducts, brands);
 });
 
 
@@ -383,7 +403,7 @@ function sortByPrice(data) {
 
 function sortByDateRecentToOld(data) {
 const sorted = data.sort((a, b) => {
-  if (a.released > b.released) {
+  if (a.date > b.date) {
     return -1;
   }
 });
@@ -392,7 +412,7 @@ return sorted;
 
 function sortByDateOldToRecent(data) {
   const sorted = data.sort((a, b) => {
-    if (a.released < b.released) {
+    if (a.date < b.date) {
       return -1;
     }
   });
@@ -421,7 +441,7 @@ function recentDate(currentProducts, onlyRecentProducts) {
   
 
    for (let i = 0; i<currentProducts.length; i++) {
-    if (currentProducts[i].released > twoWeeksAgo) {
+    if (currentProducts[i].date > twoWeeksAgo) {
      onlyRecentProducts.push(currentProducts[i]);
       }
     };
