@@ -135,7 +135,7 @@ const renderProducts = products => {
     const backgroundColor = backgroundColors[index % backgroundColors.length];
     return `
       <div class="product" id=${product._id} style="background-color: ${backgroundColor}">
-        <a href="${product.link}">${product.name}
+        <a href="${product.link}">${product.name}</a>
         <img src=${product.image} class="image">
         <div class="details">
           <span>${product.brand}</span>
@@ -145,7 +145,6 @@ const renderProducts = products => {
             <input id=${product._id} type="checkbox" onchange="manageFavorites(this)"/>
           </label>
         </div>
-        </a>
       </div>
     `;
   })
@@ -232,10 +231,9 @@ selectShow.addEventListener('change', async (event) => {
  */
 
 selectBrand.addEventListener('change', async (event) => {
-  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize, event.target.value);
+  const products = await fetchProducts('All');
   
   setCurrentProducts(products);
-
   let selectedBrand = event.target.value;
   let currentBrand = {};
   currentBrand[selectedBrand] = [];
