@@ -27,22 +27,43 @@ MongoClient.connect(MONGODB_URI, { useNewUrlParser: true }, (error, client) => {
 
 app.options('*', cors());
 
-app.get('/products', (request, response) => {
-  response.send({ 'ack': true });
+app.get('/products', async (request, response) => {
+  try{
+    const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
+    const db =  client.db(MONGODB_DB_NAME)
+    const collection = db.collection('products');
+    const result = await collection.find({}).toArray();
+    response.send({result : result});
+    client.close();
+  } catch(e){
+    response.send({error : "could not retrieve products"});  
+  }
+});
+
+app.get('/brands', async (request, response) => {
+  try{
+    const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
+    const db =  client.db(MONGODB_DB_NAME)
+    const collection = db.collection('products');
+    const result = await collection.distinct('brand');
+    response.send({result : result});
+    client.close();
+  } catch(e){
+    response.send({error : "could not retrieve brands"});  
+  }
 });
 
 app.listen(PORT, () => {
   console.log(`📡 Running on port ${PORT}`);
 });
 
-/*app.get('/products/:id', async(request, response) => {
+/*app.get('/products/:id/', async(request, response) => {
   try{
     const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
     const db =  client.db(MONGODB_DB_NAME)
     const collection = db.collection('products');
-    const productId = request.params.id;
-    const searchresult = await collection.findOne({_id: ObjectId(productId)});
-    response.send({result : searchresult});
+    const result = await collection.findOne({_id: ObjectId(request.params.id)});
+    response.send({result : result});
     client.close();
   } catch(e){
     response.send({error : "invalid id"});  
