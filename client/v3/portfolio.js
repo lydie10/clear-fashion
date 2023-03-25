@@ -54,22 +54,19 @@ const spanLatestRelease = document.querySelector('#latestRelease');
  * @param {Array} result - products to display
  * @param {Object} meta - pagination meta info
  */
-/*const setCurrentProducts = ({result, meta}) => {
-  currentProducts = result;      
-  currentPagination = meta;
-};*/
-
 const setCurrentProducts = (result) => {
   currentProducts = result;     
 };
 
 /**
  * Fetch products from api
+ * @param  {Number}  [nbProducts=30] - number of products to fetch
  * @param  {Number}  [page=1] - current page to fetch
  * @param  {Number}  [size=12] - size of the page
  * @return {Object}
  */
-const fetchProducts = async (nbProducts = 500, page = 1, size = 12) => { 
+
+const fetchProducts = async (nbProducts = 30, page = 1, size = 12) => { 
   if (nbProducts === 'All'){
   try {
     const response = await fetch(
@@ -109,17 +106,15 @@ const fetchProducts = async (nbProducts = 500, page = 1, size = 12) => {
 const fetchBrands = async () => {
   try {
     const response = await fetch(
-      `https://clear-fashion-api.vercel.app/brands`
+      `https://server-neon-alpha.vercel.app/brands`
     );
     const body = await response.json();
 
-    if (body.success !== true) {
-      
-      return {brands};
+    if (body.result !== null) {
+      if(!body.result.includes('All'))
+        {body.result.unshift('All')}
+      return body.result;
     }
-
-    body.data.result = ['dedicated','montlimart','circlesportswear']
-    return body.data;
   } catch (error) {
     console.error(error);
     return {brands};
@@ -134,24 +129,27 @@ const fetchBrands = async () => {
 const renderProducts = products => {
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
+  const backgroundColors = ['#fedcd2', '#bfd8d2', '#f6e291dd', '#d9afca'];
   const template = products
-    .map(product => {
-      return `
-      <div class="product" id=${product._id}>
-        <a href="${product.link}">${product.name}</a>
+  .map((product, index) => {
+    const backgroundColor = backgroundColors[index % backgroundColors.length];
+    return `
+      <div class="product" id=${product._id} style="background-color: ${backgroundColor}">
+        <a href="${product.link}">${product.name}
         <img src=${product.image} class="image">
         <div class="details">
-        <span>${product.brand}</span>
-        <span>${product.price}</span>
-        <label class="add-fav">
-          Add to favorites
-          <input id=${product._id} type="checkbox" onchange="manageFavorites(this)"/>
-        </label>
+          <span>${product.brand}</span>
+          <span>${product.price}</span>
+          <label class="add-fav">
+            Add to favorites
+            <input id=${product._id} type="checkbox" onchange="manageFavorites(this)"/>
+          </label>
         </div>
+        </a>
       </div>
     `;
-    })
-    .join('');
+  })
+  .join('');
 
   div.innerHTML = template;
   fragment.appendChild(div);
@@ -176,13 +174,14 @@ const renderPagination = pagination => {
 
 
 /**
- * Render page selector
- * @param  {Object} pagination
+ * Render indicators
+ * @param  {Object} products
+ * * @param  {Object} brands
  */
 const renderIndicators = (products,brands) => {
   
   spanNbProducts.innerHTML = products.length;
-  spanNbBrands.innerHTML = brands.result.length;
+  spanNbBrands.innerHTML = brands.length -1;
   spanNbNewProducts.innerHTML = onlyRecentProducts.length;
 
   let sortedProducts = sortByDateRecentToOld(products);
@@ -198,12 +197,13 @@ const renderPValues = (p50, p90, p95) => {
 
 /**
  * Render brands selector
+ *  @param  {Object} brands
  */
 const renderBrands = brands => {
-  const options = brands.result.map(brand => `<option value="${brand}">${brand}</option>`
+  const options = Array.from(brands).map(brand => `<option value="${brand}">${brand}</option>`
   ).join('');
   
-  selectBrand.innerHTML = options;;
+  selectBrand.innerHTML = options;
 };
 
 const render = (products, brands) => {
@@ -224,7 +224,7 @@ selectShow.addEventListener('change', async (event) => {
   const products = await fetchProducts(parseInt(event.target.value));
 
   setCurrentProducts(products);
-  render(currentProducts, currentPagination);
+  renderProducts(currentProducts);
 });
 
 /**
@@ -240,56 +240,57 @@ selectBrand.addEventListener('change', async (event) => {
   let currentBrand = {};
   currentBrand[selectedBrand] = [];
 
+  if (selectedBrand === 'All'){
+    renderProducts(products)
+  }
+  else{
   for (const product of currentProducts) {
     if (product.brand == selectedBrand) {
     currentBrand[product.brand].push(product)
     }
   };
-  render(currentBrand[selectedBrand], currentPagination, brands);
+  renderProducts(currentBrand[selectedBrand]);
+}
 });
 
 /**
  * By recently date
  */
 selectRecent.addEventListener('change', async (event) => {
-  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+  const products = await fetchProducts('All');
 
   setCurrentProducts(products);
 
   if(event.target.value == "Yes"){
     recentDate(currentProducts,onlyRecentProducts);
+    renderProducts(onlyRecentProducts);
   }
   else {
-    const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+    const products = await fetchProducts();
     setCurrentProducts(products);
-    render(currentProducts, currentPagination, brands);
+    renderProducts(currentProducts);
   }
-
-  render(onlyRecentProducts, currentPagination, brands);
 });
 
 /**
  * By reasonable price
  */
 selectReasonablePrice.addEventListener('change', async (event) => {
-  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+  const products = await fetchProducts('All');
 
   setCurrentProducts(products);
 
   if(event.target.value == "Yes"){
-  for (let i = 0; i<currentProducts.length; i++) {
-  if (currentProducts[i].price <50) {
-    onlyReasonablePrice.push(currentProducts[i]);
+    for (let i = 0; i<currentProducts.length; i++) {
+      if (currentProducts[i].price <50) {
+      onlyReasonablePrice.push(currentProducts[i]);
     }
   };
 }
 else {
-  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
-  setCurrentProducts(products);
-  render(currentProducts, currentPagination, brands);
+  renderProducts(currentProducts);
 }
-
-  render(onlyReasonablePrice, currentPagination, brands);
+  renderProducts(onlyReasonablePrice);
 });
 
 
@@ -304,13 +305,13 @@ selectFavorite.addEventListener('change', async (event) => {
   if(event.target.value == "Yes"){
     let favoritesList = JSON.parse(localStorage.getItem("favoriteProducts"));
   
-    render(favoritesList, currentPagination, brands);
+    renderProducts(favoritesList);
 }
 else {
   const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
 
   setCurrentProducts(products);
-  render(currentProducts, currentPagination, brands);
+  renderProducts(currentProducts);
   }
 });
 
@@ -319,7 +320,7 @@ else {
  */
 
 selectSort.addEventListener('change', async (event) => {
-  const products = await fetchProducts(currentPagination.currentPage, currentPagination.pageSize);
+  const products = await fetchProducts('All');
 
   setCurrentProducts(products);
 
@@ -338,7 +339,7 @@ selectSort.addEventListener('change', async (event) => {
     sortedProducts = sortByDateRecentToOld(currentProducts);
   }
 
-  render(sortedProducts, currentPagination, brands);
+  renderProducts(sortedProducts);
 });
 
 /**
@@ -356,21 +357,23 @@ selectPage.addEventListener('change', async (event) => {
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const products = await fetchProducts();
+  let products = await fetchProducts('All');
   const brands = await fetchBrands();
 
+  console.log("brands", brands);
   console.log("products", products);
   setCurrentProducts(products);
 
+  let [p50, p90, p95] = getPValueIndicator(currentProducts);
+  renderPValues(p50, p90, p95);
+  renderIndicators(products,brands);
+
+  products = await fetchProducts();
+  setCurrentProducts(products);
   renderProducts(products);
   renderBrands(brands);
 
   localStorage.setItem('favoriteProducts',JSON.stringify(favoriteProducts));
-
-  let [p50, p90, p95] = getPValueIndicator(currentProducts);
-
-  renderPValues(p50, p90, p95);
-  render(currentProducts, brands);
 });
 
 
