@@ -25,6 +25,7 @@ let onlyReasonablePrice = [];
 
 // favorite products
 let favoriteProducts = [];
+let favoritesList = JSON.parse(localStorage.getItem("favoriteProducts")) || [];
 
 // brands on the page 
 let brands = [];
@@ -135,16 +136,18 @@ const renderProducts = products => {
     const backgroundColor = backgroundColors[index % backgroundColors.length];
     return `
       <div class="product" id=${product._id} style="background-color: ${backgroundColor}">
-        <a href="${product.link}">${product.name}</a>
+        <a href="${product.link}" target="_blank">
+        <span class="product-name">${product.name}</span>
         <img src=${product.image} class="image">
         <div class="details">
-          <span>${product.brand}</span>
-          <span>${product.price}</span>
+          <span class="brand-name">${product.brand}</span>
+          <span>${product.price}€</span>
           <label class="add-fav">
-            Add to favorites
-            <input id=${product._id} type="checkbox" onchange="manageFavorites(this)"/>
+            Add to favorites <input id=${product._id} type="checkbox" onchange="manageFavorites(this)" ${favoritesList.some(p => p._id === product._id) ? 'checked' : ''}/>
+            <i class="heart">&#10084;</i>
           </label>
         </div>
+        </a>
       </div>
     `;
   })
@@ -344,11 +347,24 @@ selectSort.addEventListener('change', async (event) => {
  * Select Page
  */
 selectPage.addEventListener('change', async (event) => {
-  //const products = await fetchProducts(parseInt(event.target.value), currentPagination.pageSize);
-  window.scrollTo(0, parseInt(event.target.value)*(document.body.scrollHeight/5));
-  //setCurrentProducts(products);
-  //render(currentProducts, currentPagination);
+
+  if (parseInt(event.target.value) !== 1){
+    const products = await fetchProducts(parseInt(event.target.value)*200);
+    setCurrentProducts(products);
+    renderProducts(products);
+    const position = Math.round((parseInt(event.target.value)-1)/(parseInt(event.target.value)) * document.body.scrollHeight);
+    window.scrollTo({
+      top: position,
+      behavior: 'smooth'
+    });
+  }
+  else {
+    const products = await fetchProducts();
+    setCurrentProducts(products);
+    renderProducts(products);
+  }
 });
+
 
 /**
  * Load Page
@@ -469,36 +485,22 @@ function getPValueIndicator(currentProducts) {
  * Add to favorite function
  */
 
-function manageFavorites (element){
-
-  let favoritesList =  JSON.parse(localStorage.getItem("favoriteProducts"));
-
-  console.log(favoritesList)
-
-  if (!element.checked){
-    for (let i = 0; i<favoritesList.length; i++) {
-      if (favoritesList._id == element.id) {
-        favoritesList.splice(i, 1);
-        break;
+  function manageFavorites(element) {
+    
+    if (!element.checked) {
+      
+      const index = favoritesList.findIndex((p) => p._id === element.id);
+      if (index !== -1) {
+        favoritesList.splice(index, 1);
       }
-    };
-  }
-  if (element.checked) {
-    for (let i = 0; i<currentProducts.length; i++) {
-      if (currentProducts[i]._id == element.id) {
-        if (favoritesList.length == 0){
-          favoritesList = [currentProducts[i]]
-        }
-        else {
-          favoritesList.push(currentProducts[i])
-        }
-        break;
+    } else {
+      
+      const product = currentProducts.find((p) => p._id === element.id);
+      if (product && !favoritesList.some((p) => p._id === element.id)) {
+        favoritesList.push(product);
       }
-    };
+    }
+  
+    localStorage.setItem("favoriteProducts", JSON.stringify(favoritesList));
   }
-
-  localStorage.setItem("favoriteProducts", JSON.stringify(favoritesList));
-
-  console.log(localStorage);
-
-}
+  

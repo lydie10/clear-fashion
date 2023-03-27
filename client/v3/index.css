@@ -3,6 +3,22 @@ body {
   text-align: center;
   font-family: Arial, sans-serif;
 }
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://cdn.pixabay.com/photo/2023/03/14/00/12/store-7851105_960_720.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  opacity: 0.2;
+  z-index: -1; /* make sure the pseudo-element is behind the content */
+}
+
   a[href] {
     color: #115b5b;
     text-decoration: none;
@@ -18,7 +34,7 @@ body {
   margin: 0 auto;
 }
 .indicators-section {
-    background-color: #dfe3fcb5;;
+    background-color: #dfe3fce1;;
     box-shadow: 0px 0px 5px #00000033;
     box-sizing: border-box;
     padding: 10px;
@@ -50,15 +66,44 @@ body {
     flex-wrap: wrap;
     width: 100%;
   }  
+  .product-name {
+    font-size: 17px;
+  }
+  .brand-name {
+    font-size: 18px;
+    font-weight: bold;
+  }
   .product .image{
     display: block;
     margin: 0 auto;
-    width: 70%;
+    width: 85%;
     height: auto;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    margin-top: 10px;
   }
   .product .details span{
     display: block;
     text-align: center;
     line-height: 1.5;
   }
+
+  .add-fav input[type="checkbox"] {
+    display: none;
+  }
+  .add-fav {
+    font-size: 15px;
+    color: #115b5b;
+    display: block;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .add-fav input:checked + i {
+    color: red;
+  }
+  .add-fav i.heart {
+    font-size: 20px;
+    color: #115b5b;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
+  }
+  
