@@ -132,32 +132,34 @@ const renderProducts = products => {
   const div = document.createElement('div');
   const backgroundColors = ['#fedcd2', '#bfd8d2', '#f6e291dd', '#d9afca'];
   const template = products
-  .map((product, index) => {
-    const backgroundColor = backgroundColors[index % backgroundColors.length];
-    return `
-      <div class="product" id=${product._id} style="background-color: ${backgroundColor}">
-        <a href="${product.link}" target="_blank">
-        <span class="product-name">${product.name}</span>
-        <img src=${product.image} class="image">
-        <div class="details">
-          <span class="brand-name">${product.brand}</span>
-          <span>${product.price}€</span>
-          <label class="add-fav">
-            Add to favorites <input id=${product._id} type="checkbox" onchange="manageFavorites(this)" ${favoritesList.some(p => p._id === product._id) ? 'checked' : ''}/>
-            <i class="heart">&#10084;</i>
-          </label>
+    .map((product, index) => {
+      const backgroundColor = backgroundColors[index % backgroundColors.length];
+      const gradientColor = `${backgroundColor},rgba(255, 255, 255, 0.5)`;
+      return `
+        <div class="product" id=${product._id} style="background: linear-gradient(135deg, ${gradientColor});">
+          <a href="${product.link}" target="_blank">
+            <span class="product-name">${product.name}</span>
+            <img src=${product.image} class="image">
+            <div class="details">
+              <span class="brand-name">${product.brand}</span>
+              <span>${product.price}€</span>
+              <label class="add-fav">
+                Add to favorites <input id=${product._id} type="checkbox" onchange="manageFavorites(this)" ${favoritesList.some(p => p._id === product._id) ? 'checked' : ''}/>
+                <i class="heart">&#10084;</i>
+              </label>
+            </div>
+          </a>
         </div>
-        </a>
-      </div>
-    `;
-  })
-  .join('');
+      `;
+    })
+    .join('');
 
   div.innerHTML = template;
   fragment.appendChild(div);
   sectionProducts.innerHTML='<h2>Products</h2>';
   sectionProducts.appendChild(fragment);
 };
+
 
 /**
  * Render page selector

@@ -25,7 +25,7 @@ body::before {
     cursor: pointer;
   }
 .options-section {
-  background-color: #f5dadadd;;
+  background: linear-gradient(120deg, #f5dadadd,#f6dede88);
   box-shadow: 0px 0px 3px #00000033;
   box-sizing: border-box;
   padding: 10px;
@@ -34,7 +34,7 @@ body::before {
   margin: 0 auto;
 }
 .indicators-section {
-    background-color: #dfe3fce1;;
+    background: linear-gradient(135deg,#dfe3fce1, #e3e5f586);
     box-shadow: 0px 0px 5px #00000033;
     box-sizing: border-box;
     padding: 10px;
